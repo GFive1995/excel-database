@@ -29,6 +29,10 @@ public class ExcelToMysql {
 	// Excel文件所在的路径
 	private static String PATH = "d:\\2019日历.xls";
 
+	// 数据库字段
+	private static String FIELD_01 = "date";
+	private static String FIELD_02 = "type";
+	
 	public static void main(String[] args) {
 		Connection connection = null;
 		PreparedStatement pstmt = null;
@@ -46,7 +50,7 @@ public class ExcelToMysql {
 			connection = DriverManager.getConnection(DB_URL, USER, PASS);
 			List<Map<String, Object>> dataList = new ArrayList<>();
 			List<String> fieldList = new ArrayList<String>();
-			StringBuffer sql = new StringBuffer("insert into calendar(date, type) values ");
+			StringBuffer sql = new StringBuffer("insert into calendar("+FIELD_01+", "+FIELD_02+") values ");
 			// 获取Excel文档中第一个表单
 			Sheet sheet = workbook.getSheetAt(0);
 			Row row0 = sheet.getRow(0);
@@ -70,8 +74,8 @@ public class ExcelToMysql {
 				dataList.add(paraMap);
 			}
 			for (Map<String, Object> map : dataList) {
-				sql.append("('" + map.get("date") + "',");
-				sql.append("" + map.get("type") + "),");
+				sql.append("('" + map.get(FIELD_01) + "',");
+				sql.append("" + map.get(FIELD_02) + "),");
 			}
 			String exeSql = sql.substring(0, sql.toString().length() - 1);
 			pstmt = (PreparedStatement) connection.prepareStatement(exeSql);

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -29,6 +30,10 @@ public class MysqlToExcel {
     // Excel文件所在的路径
     private static String PATH = "d:\\2019日历.xls";	
 	
+	// 数据库字段
+	private static String FIELD_01 = "date";
+	private static String FIELD_02 = "type";
+    
     public static void main(String[] args) {
     	Connection connection = null;
     	PreparedStatement pstmt = null;
@@ -37,21 +42,21 @@ public class MysqlToExcel {
     		// 打开链接
     		System.out.println("连接数据库...");
 			connection = DriverManager.getConnection(DB_URL, USER, PASS);
-			String sql = "SELECT date, type FROM calendar";
+			String sql = "SELECT "+FIELD_01+", "+FIELD_02+" FROM calendar";
 			pstmt = (PreparedStatement) connection.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery(sql);
             List<Map<String, Object>> dataList = new ArrayList<>();
 			while (rs.next()) {
 				Map<String, Object> paraMap = new HashMap<String, Object>();
-				paraMap.put("date", rs.getDate("date"));
-				paraMap.put("type", rs.getString("type"));
+				paraMap.put(FIELD_01, rs.getDate(FIELD_01));
+				paraMap.put(FIELD_02, rs.getString(FIELD_02));
 				dataList.add(paraMap);
 			}
             rs.close();
 			// 表头
 			List<String> stringList = new ArrayList<>();
-			stringList.add("date");
-			stringList.add("type");
+			stringList.add(FIELD_01);
+			stringList.add(FIELD_02);
 			// 创建HSSFWorkbook对象
 			Workbook workbook = null;
 			if (PATH.endsWith(".xls")) {
