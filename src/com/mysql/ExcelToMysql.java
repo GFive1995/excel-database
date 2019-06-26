@@ -1,18 +1,11 @@
 package com.mysql;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.mysql.jdbc.PreparedStatement;
 import com.util.ExcelUtil;
@@ -45,15 +38,7 @@ public class ExcelToMysql {
 	public static void main(String[] args) {
 		Connection connection = null;
 		PreparedStatement pstmt = null;
-		Workbook workbook = null;
 		try {
-			// 输入文件
-			FileInputStream inputStream = new FileInputStream(PATH);
-			if (PATH.endsWith(".xls")) {
-				workbook = new HSSFWorkbook(inputStream);
-			} else if (PATH.endsWith(".xlsx")) {
-				workbook = new XSSFWorkbook(inputStream);
-			}
 			// 打开链接
 			System.out.println("连接数据库...");
 			connection = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -81,20 +66,9 @@ public class ExcelToMysql {
 			pstmt = (PreparedStatement) connection.prepareStatement(sql.toString());
 			pstmt.execute();
 			System.out.println("导入成功");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		} finally {
-			if (workbook != null) {
-				try {
-					workbook.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
 			if (connection != null) {
 				try {
 					connection.close();
