@@ -26,7 +26,7 @@ public class ExcelToMysql {
 	static final String PASS = "123456";					// 数据库的密码
 	private static final String PATH = "d:\\2019日历.xlsx";	// Excel文件所在的路径
 	private static final String TABLE = "calendar";			// 数据库表名
-	private static final String FIELD_01 = "date";			// 数据库字段
+	private static final String FIELD_01 = "date";			// 导入字段
 	private static final String FIELD_02 = "type";
 	
 	private static List<String> FIELDLIST = new ArrayList<>();
