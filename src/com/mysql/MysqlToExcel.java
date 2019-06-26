@@ -20,7 +20,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.mysql.jdbc.PreparedStatement;
 
-
+/**
+ * 
+ * Mysql导入Excel
+ * 
+ * @version 1.0
+ * @author wangcy
+ * @date 2019年6月26日 下午4:24:23
+ */
 public class MysqlToExcel {
 	// 数据库 URL
     static final String DB_URL = "jdbc:mysql://localhost:3306/test";
@@ -30,9 +37,17 @@ public class MysqlToExcel {
     // Excel文件所在的路径
     private static String PATH = "d:\\2019日历.xls";	
 	
+	// 数据库表
+	private static final String TABLE = "calendar";
 	// 数据库字段
 	private static String FIELD_01 = "date";
 	private static String FIELD_02 = "type";
+	
+	private static List<String> FIELDS = new ArrayList<>();
+	static {
+		FIELDS.add(FIELD_01);
+		FIELDS.add(FIELD_02);
+	}
     
     public static void main(String[] args) {
     	Connection connection = null;
@@ -42,21 +57,18 @@ public class MysqlToExcel {
     		// 打开链接
     		System.out.println("连接数据库...");
 			connection = DriverManager.getConnection(DB_URL, USER, PASS);
-			String sql = "SELECT "+FIELD_01+", "+FIELD_02+" FROM calendar";
+			String sql = "SELECT * from " + TABLE;
 			pstmt = (PreparedStatement) connection.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery(sql);
             List<Map<String, Object>> dataList = new ArrayList<>();
 			while (rs.next()) {
 				Map<String, Object> paraMap = new HashMap<String, Object>();
-				paraMap.put(FIELD_01, rs.getDate(FIELD_01));
-				paraMap.put(FIELD_02, rs.getString(FIELD_02));
+				for (int i = 0; i < FIELDS.size(); i++) {
+					paraMap.put(FIELDS.get(i), rs.getString(FIELDS.get(i)));
+				}
 				dataList.add(paraMap);
 			}
             rs.close();
-			// 表头
-			List<String> stringList = new ArrayList<>();
-			stringList.add(FIELD_01);
-			stringList.add(FIELD_02);
 			// 创建HSSFWorkbook对象
 			Workbook workbook = null;
 			if (PATH.endsWith(".xls")) {
@@ -68,16 +80,16 @@ public class MysqlToExcel {
 			HSSFSheet sheet = (HSSFSheet) workbook.createSheet("sheet");
 			// Excel表头
 			HSSFRow row0 = sheet.createRow(0);
-			for (int i = 0; i < stringList.size(); i++) {
+			for (int i = 0; i < FIELDS.size(); i++) {
 				HSSFCell cell0 = row0.createCell(i);
-				cell0.setCellValue(stringList.get(i));
+				cell0.setCellValue(FIELDS.get(i));
 			}
 			// Excel数据
 			for (int i = 0; i < dataList.size(); i++) {
 				HSSFRow rows = sheet.createRow(i+1);
-				for (int j = 0; j < stringList.size(); j++) {
+				for (int j = 0; j < FIELDS.size(); j++) {
 					HSSFCell cells = rows.createCell(j);
-					cells.setCellValue(dataList.get(i).get(stringList.get(j)).toString());
+					cells.setCellValue(dataList.get(i).get(FIELDS.get(j)).toString());
 				}
 			}
 			// 输出文件
