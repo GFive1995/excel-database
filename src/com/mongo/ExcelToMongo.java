@@ -20,6 +20,14 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+/**
+ * 
+ * Excel数据导入MongoDB
+ * 
+ * @version 1.0
+ * @author wangcy
+ * @date 2019年6月26日 下午5:41:38
+ */
 public class ExcelToMongo {
 
 	private static Integer PORT = 27017; // 端口号
@@ -32,6 +40,7 @@ public class ExcelToMongo {
 
 	public static void main(String[] args) {
 		Workbook workbook = null;
+		MongoClient mongoClient = null;
 		try {
 			// 根据输入流导入Excel产生Workbook对象
 			FileInputStream inputStream = new FileInputStream(ADDRESS);
@@ -49,7 +58,7 @@ public class ExcelToMongo {
 			List<MongoCredential> credentials = new ArrayList<MongoCredential>();
 			credentials.add(credential);
 			// 通过验证获取连接
-			MongoClient mongoClient = new MongoClient(address, credentials);
+			mongoClient = new MongoClient(address, credentials);
 			// 连接到数据库
 			MongoDatabase mongoDatabase = mongoClient.getDatabase(DATABASE);
 			// 连接文档
@@ -84,6 +93,17 @@ public class ExcelToMongo {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			if (mongoClient != null) {
+				mongoClient.close();
+			}
+			if (workbook != null) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 

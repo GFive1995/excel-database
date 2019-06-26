@@ -20,7 +20,14 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.util.ExcelUtil;
 
-
+/**
+ * 
+ * MongoDB数据导入Excel
+ * 
+ * @version 1.0
+ * @author wangcy
+ * @date 2019年6月26日 下午5:41:14
+ */
 public class MongoToExcel {
 
 	private static Integer PORT = 27017; 				// 端口号

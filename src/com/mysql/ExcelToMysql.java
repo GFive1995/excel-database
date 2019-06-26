@@ -30,24 +30,19 @@ import com.mysql.jdbc.PreparedStatement;
  */
 public class ExcelToMysql {
 
-	// 数据库 URL
-	static final String DB_URL = "jdbc:mysql://localhost:3306/test";
-	// 数据库的用户名与密码，需要根据自己的设置
-	static final String USER = "root";
-	static final String PASS = "123456";
-	// Excel文件所在的路径
-	private static final String PATH = "d:\\2019日历.xls";
-
-	// 数据库表
-	private static final String TABLE = "calendar";
-	// 数据库字段
-	private static final String FIELD_01 = "date";
+	
+	static final String DB_URL = "jdbc:mysql://localhost:3306/test";	// 数据库 URL
+	static final String USER = "root";						// 数据库的用户名
+	static final String PASS = "123456";					// 数据库的密码
+	private static final String PATH = "d:\\2019日历.xls";	// Excel文件所在的路径
+	private static final String TABLE = "calendar";			// 数据库表名
+	private static final String FIELD_01 = "date";			// 数据库字段
 	private static final String FIELD_02 = "type";
 	
-	private static List<String> FIELDS = new ArrayList<>();
+	private static List<String> FIELDLIST = new ArrayList<>();
 	static {
-		FIELDS.add(FIELD_01);
-		FIELDS.add(FIELD_02);
+		FIELDLIST.add(FIELD_01);
+		FIELDLIST.add(FIELD_02);
 	}
 	
 	public static void main(String[] args) {
@@ -70,8 +65,8 @@ public class ExcelToMysql {
 			StringBuffer sql = new StringBuffer("insert into ");
 			sql.append(TABLE);
 			sql.append("(");
-			for (int i = 0; i < FIELDS.size(); i++) {
-				sql.append(FIELDS.get(i) + ",");
+			for (int i = 0; i < FIELDLIST.size(); i++) {
+				sql.append(FIELDLIST.get(i) + ",");
 			}
 			sql.deleteCharAt(sql.length()-1);
 			sql.append(") values ");
@@ -97,8 +92,8 @@ public class ExcelToMysql {
 			}
 			for (Map<String, Object> map : dataList) {
 				sql.append("(");
-				for (int i = 0; i < FIELDS.size(); i++) {
-					sql.append("'" + map.get(FIELDS.get(i)) + "',");
+				for (int i = 0; i < FIELDLIST.size(); i++) {
+					sql.append("'" + map.get(FIELDLIST.get(i)) + "',");
 				}
 				sql.deleteCharAt(sql.length()-1);
 				sql.append("),");
