@@ -76,7 +76,6 @@ public class ExcelToMongo {
 			int rows = sheet.getLastRowNum() + 1;
 			int cells = fieldList.size();
 			for (int i = 1; i < rows; i++) {
-				System.out.println(i);
 				Row row = sheet.getRow(i);
 				Document document = new Document();
 				for (int j = 0; j < cells; j++) {

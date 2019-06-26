@@ -1,7 +1,11 @@
 package com.util;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +15,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 
 public class ExcelUtil {
 
@@ -74,8 +77,65 @@ public class ExcelUtil {
 					e.printStackTrace();
 				}
 			}
-			
 		}
+	}
+	
+	/**
+	 * 
+	 * 方法描述:获取Excel中的数据
+	 *
+	 * @param PATH		Excel路径
+	 * @return
+	 * 
+	 * @author wangcy
+	 * @date 2019年6月26日 下午5:58:51
+	 */
+	public static List<Map<String, Object>> getExcelData(String path) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		Workbook workbook = null;
+		try {
+			// 输入文件
+			FileInputStream inputStream = new FileInputStream(path);
+			if (path.endsWith(".xls")) {
+				workbook = new HSSFWorkbook(inputStream);
+			} else if (path.endsWith(".xlsx")) {
+				workbook = new XSSFWorkbook(inputStream);
+			}
+			List<String> fieldList = new ArrayList<String>();
+			// 获取Excel文档中第一个表单
+			Sheet sheet = workbook.getSheetAt(0);
+			// 获取Excel第一行名称
+			Row row0 = sheet.getRow(0);
+			for (Cell cell : row0) {
+				fieldList.add(cell.toString());
+			}
+			int rows = sheet.getLastRowNum() + 1;
+			int cells = fieldList.size();
+			for (int i = 1; i < rows; i++) {
+				Row row = sheet.getRow(i);
+				Map<String, Object> paraMap = new HashMap<>();
+				for (int j = 0; j < cells; j++) {
+					Cell cell = row.getCell(j);
+					if (cell != null && !cell.equals("")) {
+						paraMap.put(fieldList.get(j), cell.toString());
+					}
+				}
+				dataList.add(paraMap);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (workbook != null) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return dataList;
 	}
 	
 }
