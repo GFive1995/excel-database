@@ -20,7 +20,7 @@ import com.util.ExcelUtil;
  * @author wangcy
  * @date 2019年6月26日 下午4:24:23
  */
-public class MysqlToExcel {
+public class MysqlToExcel { 
 	
     static final String DB_URL = "jdbc:mysql://localhost:3306/test";	// 数据库 URL
     static final String USER = "root";					 	// 数据库的用户名
