@@ -1,14 +1,13 @@
 package com.mongo;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.bson.Document;
 
@@ -19,19 +18,23 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.util.ExcelUtil;
 
 
 public class MongoToExcel {
 
-	private static Integer PORT = 27017;                    //端口号
-	private static String IP = "localhost";                 //Ip
-	private static String DATABASE = "database";            //数据库名称
-	private static String USERNAME = "username";            //用户名
-	private static String PASSWORD = "password";            //密码
-	private static String COLLECTION = "calendar";          //文档名称
-	private static String ADDRESS = "d:\\2019日历.xls";		//Excel文件所在的路径
+	private static Integer PORT = 27017; 				// 端口号
+	private static String IP = "localhost"; 			// Ip
+	private static String DATABASE = "database"; 		// 数据库名称
+	private static String USERNAME = "username"; 		// 用户名
+	private static String PASSWORD = "password"; 		// 密码
+	private static String COLLECTION = "calendar"; 		// 文档名称
+	private static String PATH = "d:\\2019日历.xlsx"; 	// Excel文件所在的路径
+	private static String FILE_NAME = "2019日历.xlsx";	// 文件名
 	
 	public static void main(String[] args) {
+		MongoClient mongoClient = null;
+		HSSFWorkbook workbook = null;
 		try {
 			// IP，端口
 			ServerAddress serverAddress = new ServerAddress(IP, PORT);
@@ -42,7 +45,7 @@ public class MongoToExcel {
 			List<MongoCredential> credentials = new ArrayList<MongoCredential>();
 			credentials.add(credential);
 			// 通过验证获取连接
-			MongoClient mongoClient = new MongoClient(address, credentials);
+			mongoClient = new MongoClient(address, credentials);
 			// 连接到数据库
 			MongoDatabase mongoDatabase = mongoClient.getDatabase(DATABASE);
 			// 连接文档
@@ -50,42 +53,36 @@ public class MongoToExcel {
 			// 检索所有文档
 			FindIterable<Document> findIterable = collection.find();
 			MongoCursor<Document> mongoCursor = findIterable.iterator();
-			List<Document> documents = new ArrayList<>();
+			List<Map<String, Object>> dataList = Lists.newArrayList();
+			List<String> fieldList = new ArrayList<>();
 			while (mongoCursor.hasNext()) {
-				documents.add(mongoCursor.next());
-			}
-			// 表头
-			List<String> stringList = new ArrayList<>();
-			for (Entry<String, Object> entry : documents.get(0).entrySet()) {
-				stringList.add(entry.getKey());
-			}
-			// 创建HSSFWorkbook对象
-			HSSFWorkbook workbook = new HSSFWorkbook();
-			// 创建HSSFSheet对象
-			HSSFSheet sheet = workbook.createSheet("sheet");
-			// Excel表头
-			HSSFRow row0 = sheet.createRow(0);
-			for (int i = 0; i < stringList.size(); i++) {
-				HSSFCell cell0 = row0.createCell(i);
-				cell0.setCellValue(stringList.get(i));
-			}
-			// Excel数据
-			for (int i = 0; i < documents.size(); i++) {
-				HSSFRow rows = sheet.createRow(i+1);
-				for (int j = 0; j < stringList.size(); j++) {
-					HSSFCell cells = rows.createCell(j);
-					cells.setCellValue(documents.get(i).get(stringList.get(j)).toString());
+				Document document = mongoCursor.next();
+				if (fieldList==null || fieldList.size()==0) {
+					for (Entry<String, Object> entry : document.entrySet()) {
+						fieldList.add(entry.getKey());
+					}
+				} 
+				Map<String, Object> paraMap = new HashMap<String, Object>();
+				for (int i = 0; i < fieldList.size(); i++) {
+					paraMap.put(fieldList.get(i), document.get(fieldList.get(i)));
 				}
+				dataList.add(paraMap);
 			}
-			// 输出文件
-			FileOutputStream outputStream = new FileOutputStream(ADDRESS);
-			workbook.write(outputStream);
-			outputStream.flush();
+			ExcelUtil.downloadExcel(FILE_NAME, PATH, fieldList, fieldList, dataList);
 			System.out.println("导出成功");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		} finally {
+			if (mongoClient != null) {
+				mongoClient.close();
+			}
+			if (workbook != null) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	

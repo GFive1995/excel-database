@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="/" kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/bson-3.4.2.jar"/>
+	<classpathentry kind="lib" path="lib/bson-3.4.2.jar" sourcepath="C:/Users/WANGCY~1.COM/AppData/Local/Temp/decompiler/source/bson-3.4.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/mongodb-driver-3.4.2.jar" sourcepath="C:/Users/WANGCY~1.COM/AppData/Local/Temp/decompiler/source/mongodb-driver-3.4.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/mongodb-driver-core-3.4.2.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.10.1-20140818.jar" sourcepath="C:/Users/WANGCY~1.COM/AppData/Local/Temp/decompiler/source/poi-3.10.1-sources.jar"/>

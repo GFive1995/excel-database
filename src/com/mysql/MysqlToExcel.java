@@ -21,18 +21,14 @@ import com.util.ExcelUtil;
  * @date 2019年6月26日 下午4:24:23
  */
 public class MysqlToExcel {
-	// 数据库 URL
-    static final String DB_URL = "jdbc:mysql://localhost:3306/test";
-    // 数据库的用户名与密码，需要根据自己的设置
-    static final String USER = "root";
-    static final String PASS = "123456";
-    // Excel文件所在的路径
-    private static String PATH = "d:\\2019日历.xlsx";	
 	
-	// 数据库表
-	private static final String TABLE = "calendar";
-	// 数据库字段
-	private static String FIELD_01 = "date";
+    static final String DB_URL = "jdbc:mysql://localhost:3306/test";	// 数据库 URL
+    static final String USER = "root";					 	// 数据库的用户名
+    static final String PASS = "123456";				 	// 数据库的密码
+    private static String PATH = "d:\\2019日历.xlsx";			// Excel文件所在的路径
+    private static String FILE_NAME = "2019日历.xlsx";		// 文件名
+	private static final String TABLE = "calendar";			// 数据库表名
+	private static String FIELD_01 = "date";				// 数据库字段
 	private static String FIELD_02 = "type";
 	
 	private static List<String> FIELDLIST = new ArrayList<>();
@@ -60,7 +56,7 @@ public class MysqlToExcel {
 				dataList.add(paraMap);
 			}
             rs.close();
-            ExcelUtil.downloadExcel("2019日历.xlsx", PATH, FIELDLIST, FIELDLIST, dataList);
+            ExcelUtil.downloadExcel(FILE_NAME, PATH, FIELDLIST, FIELDLIST, dataList);
 			System.out.println("导出成功");
 		} catch (SQLException e) {
 			e.printStackTrace();
