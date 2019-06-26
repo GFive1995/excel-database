@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 public class ExcelUtil {
@@ -27,11 +29,15 @@ public class ExcelUtil {
 	 * @date 2019年6月26日 下午4:35:38
 	 */
 	public static void downloadExcel(String excelName, String path, List<String> headList, List<String> fieldList, List<Map<String, Object>> dataList) {
-		SXSSFWorkbook workbook = null;
+		Workbook workbook = null;
 		FileOutputStream outputStream = null;
 		try {
 			FileUtil.mkdir(path);
-			workbook = new SXSSFWorkbook();
+			if (path.endsWith(".xls")) {
+				workbook = new HSSFWorkbook();
+			} else if (path.endsWith(".xlsx")) {
+				workbook = new XSSFWorkbook();
+			}
 			Sheet sheet = workbook.createSheet(excelName);
 			Row row_0 = sheet.createRow(0);
 			for (int i = 0; i < headList.size(); i++) {
