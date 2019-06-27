@@ -3,7 +3,7 @@ package com.mysql;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -21,19 +21,12 @@ import com.util.ExcelUtil;
 public class ExcelToMysql {
 
 	
-	static final String DB_URL = "jdbc:mysql://localhost:3306/test";	// 数据库 URL
-	static final String USER = "root";						// 数据库的用户名
-	static final String PASS = "123456";					// 数据库的密码
-	private static final String PATH = "d:\\2019日历.xlsx";	// Excel文件所在的路径
-	private static final String TABLE = "calendar";			// 数据库表名
-	private static final String FIELD_01 = "date";			// 导入字段
-	private static final String FIELD_02 = "type";
-	
-	private static List<String> FIELDLIST = new ArrayList<>();
-	static {
-		FIELDLIST.add(FIELD_01);
-		FIELDLIST.add(FIELD_02);
-	}
+	static final String DB_URL = "jdbc:mysql://localhost:3306/test";		// 数据库 URL
+	static final String USER = "root";										// 数据库的用户名
+	static final String PASS = "123456";									// 数据库的密码
+	private static final String PATH = "d:\\2019日历.xlsx";					// Excel文件所在的路径
+	private static final String TABLE = "calendar";							// 数据库表名
+	private static List<String> FIELDLIST = Arrays.asList("data", "type");	// 数据库字段
 	
 	public static void main(String[] args) {
 		Connection connection = null;

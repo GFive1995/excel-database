@@ -1,6 +1,7 @@
 package com.mongo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -30,15 +31,7 @@ public class ExcelToMongo {
 	private static String PASSWORD = "password"; 		// 密码
 	private static String COLLECTION = "calendar"; 		// 文档名称
 	private static String PATH = "d:\\2019日历.xls"; 		// Excel文件所在的路径
-
-	private static String FIELD_01 = "date";			// 导入字段
-	private static String FIELD_02 = "type";
-	
-	private static List<String> FIELDLIST = new ArrayList<>();
-	static {
-		FIELDLIST.add(FIELD_01);
-		FIELDLIST.add(FIELD_02);
-	}
+	private static List<String> FIELDLIST = Arrays.asList("data", "type");	// 数据库字段
 	
 	
 	public static void main(String[] args) {
